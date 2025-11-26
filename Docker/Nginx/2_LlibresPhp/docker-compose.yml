@@ -1,0 +1,15 @@
+services:
+  web:
+    container_name: nginxEx2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    links:
+      - php-fpm
+
+  php-fpm:
+    image: php:8-fpm
+    volumes:
+      - ./llibres-main:/var/www/html/llibres
