@@ -1,0 +1,48 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_server
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx-conf:/etc/nginx/conf.d  # Tu configuración de Nginx
+      - ./certs:/etc/nginx/certs        # Tus certificados SSL originales
+      - web_data:/var/www               # <-- IMPORTANTE: Comparte archivos con PHP
+    depends_on:
+      - php
+
+  php:
+    container_name: php_fpm
+    build: .
+    volumes:
+      - web_data:/var/www               # <-- IMPORTANTE: Comparte archivos con Nginx
+    env_file:
+      - passwords
+
+  db:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: llibres
+    volumes:
+      - db_data:/var/lib/mysql
+
+  admin:
+    image: phpmyadmin
+    ports:
+      - "8001:80"
+    environment:
+      - PMA_HOST=db
+      - DB_USERNAME=admin
+      - DB_PASSWORD=secret
+
+  nginx2:
+    image: nginx:alpine
+    container_name: nginx_server2
+    depends_on:
+      - php
+
+volumes:
+  db_data:
+  web_data: # El volumen mágico que une Nginx y PHP

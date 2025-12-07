@@ -1,0 +1,11 @@
+$DOMAIN="www.camisetes.com"
+
+docker run --rm -v "$(Get-Location)\certs:/certs" alpine sh -c "
+apk add openssl >/dev/null &&
+openssl req -x509 -nodes -days 365 \
+  -newkey rsa:2048 \
+  -keyout /certs/${DOMAIN}.key \
+  -out /certs/${DOMAIN}.crt \
+  -subj '/CN=${DOMAIN}' \
+  -sha256
+"
