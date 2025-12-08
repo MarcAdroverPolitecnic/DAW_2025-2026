@@ -6,9 +6,9 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx-conf:/etc/nginx/conf.d  # Tu configuración de Nginx
-      - ./certs:/etc/nginx/certs        # Tus certificados SSL originales
-      - web_data:/var/www               # <-- IMPORTANTE: Comparte archivos con PHP
+      - ./nginx-conf:/etc/nginx/conf.d
+      - ./certs:/etc/nginx/certs
+      - web_data:/var/www
     depends_on:
       - php
 
@@ -16,7 +16,7 @@ services:
     container_name: php_fpm
     build: .
     volumes:
-      - web_data:/var/www               # <-- IMPORTANTE: Comparte archivos con Nginx
+      - web_data:/var/www
     env_file:
       - passwords
 
@@ -37,12 +37,6 @@ services:
       - DB_USERNAME=admin
       - DB_PASSWORD=secret
 
-  nginx2:
-    image: nginx:alpine
-    container_name: nginx_server2
-    depends_on:
-      - php
-
 volumes:
   db_data:
-  web_data: # El volumen mágico que une Nginx y PHP
+  web_data:
